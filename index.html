@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banca de Bebidas — Feira Cultural</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topo">
+  <div class="marca">
+    <span class="marca-icone">🥤</span>
+    <div>
+      <h1>Banca da Feira</h1>
+      <p>bebidas geladas pra curtir a cultura</p>
+    </div>
+  </div>
+  <button class="btn-carrinho" id="botao-carrinho" aria-label="Abrir carrinho">
+    🛍️ <span id="contador-carrinho">0</span>
+  </button>
+</header>
+
+<section class="hero">
+  <div class="hero-conteudo">
+    <span class="hero-selo">🧊 Geladinhas na caixa de isopor</span>
+    <h2 class="hero-titulo">Matou a sede? A cultura agradece.</h2>
+    <p class="hero-texto">Refrigerante, água e suco geladinho pra você aproveitar a feira sem derreter no calor.</p>
+  </div>
+</section>
+
+<nav class="abas" role="tablist">
+  <button class="aba ativa" data-aba="cardapio" role="tab" aria-selected="true">Cardápio</button>
+  <button class="aba" data-aba="carrinho" role="tab" aria-selected="false">Carrinho</button>
+</nav>
+
+<main>
+
+  <!-- CARDÁPIO -->
+  <section id="painel-cardapio" class="painel ativo">
+    <div id="grade-cardapio" class="grade-cardapio"></div>
+  </section>
+
+  <!-- CARRINHO -->
+  <section id="painel-carrinho" class="painel">
+    <div id="lista-carrinho" class="lista-carrinho"></div>
+    <div class="resumo-carrinho">
+      <span>Total</span>
+      <strong id="total-carrinho">R$ 0,00</strong>
+    </div>
+    <button class="btn-primario" id="ir-para-finalizar">Ir para finalizar pedido</button>
+  </section>
+
+  <!-- FINALIZAR (sem aba própria, acessado pelo botão acima) -->
+  <section id="painel-finalizar" class="painel">
+
+    <form id="form-pedido" class="form-pedido">
+      <label>
+        Seu nome
+        <input type="text" id="campo-nome" placeholder="Como te chamamos na banca?" required>
+      </label>
+
+      <div class="forma-pagamento" id="bloco-pagamento">
+        <p class="rotulo-pagamento">Como vai pagar?</p>
+        <div class="opcoes-pagamento">
+          <button type="button" class="opcao-pagamento" data-pagamento="dinheiro">💵 Dinheiro</button>
+          <button type="button" class="opcao-pagamento" data-pagamento="pix">📱 Pix</button>
+          <button type="button" class="opcao-pagamento" data-pagamento="cartao">💳 Cartão</button>
+        </div>
+
+        <div class="opcoes-cartao escondido" id="bloco-cartao">
+          <button type="button" class="opcao-pagamento" data-cartao="credito">Crédito</button>
+          <button type="button" class="opcao-pagamento" data-cartao="debito">Débito</button>
+        </div>
+      </div>
+
+      <div class="resumo-final" id="resumo-final"></div>
+
+      <button type="submit" class="btn-primario" id="btn-finalizar" disabled>Finalizar pedido</button>
+    </form>
+
+    <div id="confirmacao" class="confirmacao escondido">
+      <div class="selo">🎫</div>
+      <p class="senha">Senha <span id="numero-senha">000</span></p>
+      <p class="mensagem-fofa" id="mensagem-fofa"></p>
+      <button class="btn-secundario" id="novo-pedido">Fazer outro pedido</button>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
