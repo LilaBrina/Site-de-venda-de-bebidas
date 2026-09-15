@@ -1,24 +1,29 @@
 // ======================================================
-// CARDÁPIO — as imagens vêm da pasta "imagens" (ver nomes abaixo)
+// CONFIGURAÇÕES RÁPIDAS
+// ======================================================
+// CARDÁPIO — as imagens vêm da pasta "imagens"
 // ======================================================
 const cardapio = [
   {
     id: 1,
     imagem: "imagens/coca-cola.png",
+    selo: "Clássica",
     nome: "Coca-Cola Lata",
-    desc: "A clássica, gelada e borbulhante que combina com qualquer roda de conversa na feira.",
+    desc: "A clássica, gelada e borbulhante que combina com qualquer roda de conversa.",
     preco: 6,
   },
   {
     id: 2,
     imagem: "imagens/coca-cola-zero.png",
+    selo: "Zero açúcar",
     nome: "Coca-Cola Zero Lata",
-    desc: "Todo o sabor de sempre, sem açúcar — pra curtir a feira inteira sem peso na consciência.",
+    desc: "Todo o sabor de sempre, sem açúcar — pra curtir a Feira inteira sem peso na consciência.",
     preco: 6,
   },
   {
     id: 3,
     imagem: "imagens/guarana.png",
+    selo: "Favorita",
     nome: "Guaraná Antarctica Lata",
     desc: "O queridinho brasileiro, docinho e cheio de bolhas de alegria.",
     preco: 6,
@@ -26,20 +31,23 @@ const cardapio = [
   {
     id: 4,
     imagem: "imagens/guarana-zero.png",
+    selo: "Zero açúcar",
     nome: "Guaraná Antarctica Zero Lata",
-    desc: "Aquele guaraná de sempre, só que na versão levinha pro seu dia de feira.",
+    desc: "Aquele guaraná de sempre, só que na versão levinha pro seu dia a dia.",
     preco: 6,
   },
   {
     id: 5,
     imagem: "imagens/agua.png",
+    selo: "Hidrata",
     nome: "Água Mineral",
-    desc: "Pra hidratar com estilo entre uma dança e outra da feira.",
+    desc: "Pra hidratar com estilo.",
     preco: 4,
   },
   {
     id: 6,
     imagem: "imagens/suco-uva.png",
+    selo: "Refrescante",
     nome: "Suco de Uva Del Valle Lata",
     desc: "Uva roxa bem suculenta numa latinha gelada, direto pra sua mão.",
     preco: 6,
@@ -76,7 +84,7 @@ function mostrarToast(texto) {
   toast.textContent = texto;
 
   toast.classList.remove("mostrando");
-  void toast.offsetWidth; // reinicia a animação mesmo em cliques repetidos
+  void toast.offsetWidth;
   toast.classList.add("mostrando");
 
   clearTimeout(toastTimeout);
@@ -86,7 +94,7 @@ function mostrarToast(texto) {
 }
 
 // ======================================================
-// RENDER — CARDÁPIO
+// RENDER — CARDÁPIO (com selinho e seletor de quantidade)
 // ======================================================
 function renderCardapio() {
   const grade = document.getElementById("grade-cardapio");
@@ -95,37 +103,61 @@ function renderCardapio() {
       (item) => `
     <div class="item-cardapio">
       <div class="item-imagem">
+        <span class="item-selo">${item.selo}</span>
         <img src="${item.imagem}" alt="${item.nome}">
       </div>
       <div class="item-corpo">
         <div class="item-nome">${item.nome}</div>
         <div class="item-desc">${item.desc}</div>
-        <div class="item-rodape">
-          <span class="item-preco">${formatoMoeda(item.preco)}</span>
-          <button class="btn-add" data-id="${item.id}" aria-label="Adicionar ${item.nome}">+</button>
+        <div class="item-preco">${formatoMoeda(item.preco)}</div>
+        <div class="item-acoes">
+          <div class="seletor-qtd">
+            <button type="button" data-qtd-acao="menos" data-id="${item.id}">−</button>
+            <span id="qtd-${item.id}">1</span>
+            <button type="button" data-qtd-acao="mais" data-id="${item.id}">+</button>
+          </div>
+          <button class="btn-adicionar" data-id="${item.id}">Adicionar</button>
         </div>
       </div>
     </div>`
     )
     .join("");
 
-  grade.querySelectorAll(".btn-add").forEach((botao) => {
+  // seletor de quantidade (1 a 20) antes de adicionar
+  grade.querySelectorAll("[data-qtd-acao]").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      const id = botao.dataset.id;
+      const span = document.getElementById(`qtd-${id}`);
+      let valor = Number(span.textContent);
+      valor = botao.dataset.qtdAcao === "mais" ? Math.min(20, valor + 1) : Math.max(1, valor - 1);
+      span.textContent = valor;
+    });
+  });
+
+  // botão "Adicionar"
+  grade.querySelectorAll(".btn-adicionar").forEach((botao) => {
     let timeoutConfirmado = null;
 
     botao.addEventListener("click", () => {
       const id = Number(botao.dataset.id);
       const item = cardapio.find((i) => i.id === id);
-      carrinho[id] = (carrinho[id] || 0) + 1;
+      const span = document.getElementById(`qtd-${id}`);
+      const qtdEscolhida = Number(span.textContent);
 
-      mostrarToast(`${item.nome} adicionado ao carrinho!`);
+      carrinho[id] = (carrinho[id] || 0) + qtdEscolhida;
 
+      mostrarToast(`${qtdEscolhida}× ${item.nome} adicionado ao carrinho!`);
+
+      const textoOriginal = botao.textContent;
       botao.classList.add("confirmado");
-      botao.textContent = "✓";
+      botao.textContent = "✓ Adicionado";
       clearTimeout(timeoutConfirmado);
       timeoutConfirmado = setTimeout(() => {
         botao.classList.remove("confirmado");
-        botao.textContent = "+";
+        botao.textContent = textoOriginal;
       }, 900);
+
+      span.textContent = 1; // volta o seletor pra 1 depois de adicionar
 
       atualizarTudo();
     });
@@ -354,6 +386,8 @@ document.getElementById("novo-pedido").addEventListener("click", () => {
   document.getElementById("confirmacao").classList.add("escondido");
   mudarAba("cardapio");
 });
+
+
 
 // ======================================================
 // EFEITO DE BALANÇO DOS ÍCONES AO ROLAR A PÁGINA

@@ -10,26 +10,24 @@
 </head>
 <body>
 
+<!-- BARRA DE AVISO -->
+<div class="barra-aviso">
+  🎉 Peça agora e retire fresquinha na nossa banca da Feira Cultural!
+</div>
+
+<!-- CABEÇALHO -->
 <header class="topo">
   <div class="marca">
     <span class="marca-icone">🥤</span>
     <div>
-      <h1>Banca da Feira</h1>
-      <p>bebidas geladas pra curtir a cultura</p>
+      <h1>Banca das Bebidas</h1>
+      <p>bebidas geladas pra curtir a feira!</p>
     </div>
   </div>
   <button class="btn-carrinho" id="botao-carrinho" aria-label="Abrir carrinho">
     🛍️ <span id="contador-carrinho">0</span>
   </button>
 </header>
-
-<section class="hero">
-  <div class="hero-conteudo">
-    <span class="hero-selo">🧊 Geladinhas na caixa de isopor</span>
-    <h2 class="hero-titulo">Matou a sede? A cultura agradece.</h2>
-    <p class="hero-texto">Refrigerante, água e suco geladinho pra você aproveitar a feira sem derreter no calor.</p>
-  </div>
-</section>
 
 <nav class="abas" role="tablist">
   <button class="aba ativa" data-aba="cardapio" role="tab" aria-selected="true">Cardápio</button>
@@ -40,6 +38,70 @@
 
   <!-- CARDÁPIO -->
   <section id="painel-cardapio" class="painel ativo">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-texto-bloco">
+        <span class="hero-selo">🧊 Direto do isopor pra sua mão</span>
+        <h2 class="hero-titulo">Matou a sede?<br><span class="hero-destaque">A cultura agradece.</span></h2>
+        <p class="hero-texto">Refrigerante, água e suco geladinho pra você aproveitar a feira sem derreter no calor.</p>
+        <div class="hero-preco-caixa">
+          <span class="hero-preco-rotulo">a partir de</span>
+          <span class="hero-preco-valor">R$ 4,00</span>
+        </div>
+        <a href="#grade-cardapio" class="btn-primario hero-botao">Ver cardápio</a>
+      </div>
+      <div class="hero-imagem-bloco">
+        <img src="imagens/coca-cola.png" alt="" class="hero-lata hero-lata-1" onerror="this.style.display='none'">
+        <img src="imagens/guarana.png" alt="" class="hero-lata hero-lata-2" onerror="this.style.display='none'">
+        <img src="imagens/suco-uva.png" alt="" class="hero-lata hero-lata-3" onerror="this.style.display='none'">
+      </div>
+    </section>
+
+    <!-- SELOS DE CONFIANÇA -->
+    <section class="selos">
+      <div class="selo-item">
+        <span class="selo-icone">🎟️</span>
+        <div>
+          <strong>Retirada rápida</strong>
+          <p>Busque assim que finalizar</p>
+        </div>
+      </div>
+      <div class="selo-item">
+        <span class="selo-icone">🧊</span>
+        <div>
+          <strong>Sempre geladinha</strong>
+          <p>Direto do isopor</p>
+        </div>
+      </div>
+      <div class="selo-item">
+        <span class="selo-icone">💬</span>
+        <div>
+          <strong>Atendimento gente boa</strong>
+          <p>Com carinho e senso de humor</p>
+        </div>
+      </div>
+      <div class="selo-item">
+        <span class="selo-icone">🔒</span>
+        <div>
+          <strong>Pedido garantido</strong>
+          <p>Sua senha, sua vez</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TÍTULO DA SEÇÃO DE PRODUTOS -->
+    <div class="titulo-secao">
+      <div>
+        <h3>Cardápio de hoje</h3>
+        <p>Escolha, adicione ao carrinho e já vai preparando a sede</p>
+      </div>
+      <div class="contagem" id="contagem">
+        <span class="contagem-rotulo">Fim da feira em</span>
+        <div class="contagem-numeros" id="contagem-numeros">--:--:--</div>
+      </div>
+    </div>
+
     <div id="grade-cardapio" class="grade-cardapio"></div>
   </section>
 
