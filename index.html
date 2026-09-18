@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Banca de Bebidas — Feira Cultural</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,13 +15,16 @@
   🎉 Peça agora e retire fresquinha na nossa banca da Feira Cultural!
 </div>
 
+<!-- BOTÃO DA ÁREA RESTRITA (canto da tela) -->
+<button class="botao-admin" id="botao-admin" aria-label="Área restrita">⋮</button>
+
 <!-- CABEÇALHO -->
 <header class="topo">
   <div class="marca">
     <span class="marca-icone">🥤</span>
     <div>
-      <h1>Banca das Bebidas</h1>
-      <p>bebidas geladas pra curtir a feira!</p>
+      <h1>Banca da Feira</h1>
+      <p>bebidas geladas pra curtir a cultura</p>
     </div>
   </div>
   <button class="btn-carrinho" id="botao-carrinho" aria-label="Abrir carrinho">
@@ -39,55 +42,17 @@
   <!-- CARDÁPIO -->
   <section id="painel-cardapio" class="painel ativo">
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-texto-bloco">
-        <span class="hero-selo">🧊 Direto do isopor pra sua mão</span>
-        <h2 class="hero-titulo">Matou a sede?<br><span class="hero-destaque">A cultura agradece.</span></h2>
-        <p class="hero-texto">Refrigerante, água e suco geladinho pra você aproveitar a feira sem derreter no calor.</p>
-        <div class="hero-preco-caixa">
-          <span class="hero-preco-rotulo">a partir de</span>
-          <span class="hero-preco-valor">R$ 4,00</span>
-        </div>
-        <a href="#grade-cardapio" class="btn-primario hero-botao">Ver cardápio</a>
+    <!-- CARROSSEL DE APRESENTAÇÃO -->
+    <section class="carrossel" id="carrossel">
+      <div class="carrossel-trilha">
+        <img src="imagens/banner1.png" class="carrossel-imagem ativa" alt="Banner 1">
+        <img src="imagens/banner2.png" class="carrossel-imagem" alt="Banner 2">
+        <img src="imagens/banner3.png" class="carrossel-imagem" alt="Banner 3">
+        <img src="imagens/banner4.png" class="carrossel-imagem" alt="Banner 4">
       </div>
-      <div class="hero-imagem-bloco">
-        <img src="imagens/coca-cola.png" alt="" class="hero-lata hero-lata-1" onerror="this.style.display='none'">
-        <img src="imagens/guarana.png" alt="" class="hero-lata hero-lata-2" onerror="this.style.display='none'">
-        <img src="imagens/suco-uva.png" alt="" class="hero-lata hero-lata-3" onerror="this.style.display='none'">
-      </div>
-    </section>
-
-    <!-- SELOS DE CONFIANÇA -->
-    <section class="selos">
-      <div class="selo-item">
-        <span class="selo-icone">🎟️</span>
-        <div>
-          <strong>Retirada rápida</strong>
-          <p>Busque assim que finalizar</p>
-        </div>
-      </div>
-      <div class="selo-item">
-        <span class="selo-icone">🧊</span>
-        <div>
-          <strong>Sempre geladinha</strong>
-          <p>Direto do isopor</p>
-        </div>
-      </div>
-      <div class="selo-item">
-        <span class="selo-icone">💬</span>
-        <div>
-          <strong>Atendimento gente boa</strong>
-          <p>Com carinho e senso de humor</p>
-        </div>
-      </div>
-      <div class="selo-item">
-        <span class="selo-icone">🔒</span>
-        <div>
-          <strong>Pedido garantido</strong>
-          <p>Sua senha, sua vez</p>
-        </div>
-      </div>
+      <button class="carrossel-seta carrossel-seta-esq" id="seta-anterior" aria-label="Imagem anterior">‹</button>
+      <button class="carrossel-seta carrossel-seta-dir" id="seta-proxima" aria-label="Próxima imagem">›</button>
+      <div class="carrossel-pontos" id="carrossel-pontos"></div>
     </section>
 
     <!-- TÍTULO DA SEÇÃO DE PRODUTOS -->
@@ -119,10 +84,6 @@
   <section id="painel-finalizar" class="painel">
 
     <form id="form-pedido" class="form-pedido">
-      <label>
-        Seu nome
-        <input type="text" id="campo-nome" placeholder="Como te chamamos na banca?" required>
-      </label>
 
       <div class="forma-pagamento" id="bloco-pagamento">
         <p class="rotulo-pagamento">Como vai pagar?</p>
@@ -144,16 +105,49 @@
     </form>
 
     <div id="confirmacao" class="confirmacao escondido">
-      <div class="selo">🎫</div>
-      <p class="senha">Senha <span id="numero-senha">000</span></p>
+      <div class="selo">🎉</div>
       <p class="mensagem-fofa" id="mensagem-fofa"></p>
+
+      <div id="bloco-pix" class="bloco-pix escondido">
+        <img id="qr-pix" class="qr-pix" alt="QR Code para pagamento Pix">
+        <p class="valor-pix">Valor exato: <strong id="valor-pix-texto">R$ 0,00</strong></p>
+      </div>
+
       <button class="btn-secundario" id="novo-pedido">Fazer outro pedido</button>
     </div>
   </section>
 
 </main>
 
+<!-- BARRA FLUTUANTE DO CARRINHO — some por padrão, some via classe "escondido" -->
+<div class="barra-flutuante escondido" id="barra-flutuante">
+  <span id="barra-flutuante-info">0 itens • R$ 0,00</span>
+  <button class="btn-primario" id="botao-ver-carrinho">Ver carrinho</button>
+</div>
+
 <div id="toast" class="toast"></div>
+
+<!-- MODAL DE SENHA DA ÁREA RESTRITA -->
+<div class="modal escondido" id="modal-senha">
+  <div class="modal-caixa">
+    <p class="modal-mensagem">🕵️ Ei, essa área aqui é só pra quem manda na banca! Sabe a senha secreta?</p>
+    <input type="password" id="campo-senha-admin" class="modal-input" placeholder="Digite a senha">
+    <p class="modal-erro escondido" id="modal-erro">Ops, não é essa não! Tenta de novo 😅</p>
+    <div class="modal-botoes">
+      <button class="btn-secundario" id="cancelar-admin">Cancelar</button>
+      <button class="btn-primario" id="confirmar-admin">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAINEL ADMIN: PEDIDOS FINALIZADOS -->
+<div class="painel-admin escondido" id="painel-admin">
+  <div class="painel-admin-caixa">
+    <h3>Pedidos finalizados</h3>
+    <div id="lista-pedidos-admin" class="lista-pedidos-admin"></div>
+    <button class="btn-primario" id="fechar-admin">Fechar e voltar pro cardápio</button>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>

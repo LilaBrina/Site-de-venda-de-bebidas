@@ -1,106 +1,119 @@
 // ======================================================
 // CONFIGURAÇÕES RÁPIDAS
 // ======================================================
+
+// Edite esta data/hora para quando a feira realmente termina:
+const FIM_DA_FEIRA = new Date("2026-09-20T22:00:00");
+
+// Troca de imagem do carrossel a cada X milissegundos:
+const INTERVALO_CARROSSEL = 3000;
+
+// Senha da área restrita (pedidos finalizados):
+const SENHA_ADMIN = "Preve2026";
+
+// ======================================================
+// DADOS DA SUA CHAVE PIX — PREENCHA AQUI COM OS SEUS DADOS
+// ======================================================
+const CHAVE_PIX = "SUA_CHAVE_PIX_AQUI";
+const NOME_RECEBEDOR = "SEU NOME AQUI";
+const CIDADE_RECEBEDOR = "SUA CIDADE";
+
+// ======================================================
 // CARDÁPIO — as imagens vêm da pasta "imagens"
 // ======================================================
 const cardapio = [
-  {
-    id: 1,
-    imagem: "imagens/coca-cola.png",
-    selo: "Clássica",
-    nome: "Coca-Cola Lata",
-    desc: "A clássica, gelada e borbulhante que combina com qualquer roda de conversa.",
-    preco: 6,
-  },
-  {
-    id: 2,
-    imagem: "imagens/coca-cola-zero.png",
-    selo: "Zero açúcar",
-    nome: "Coca-Cola Zero Lata",
-    desc: "Todo o sabor de sempre, sem açúcar — pra curtir a Feira inteira sem peso na consciência.",
-    preco: 6,
-  },
-  {
-    id: 3,
-    imagem: "imagens/guarana.png",
-    selo: "Favorita",
-    nome: "Guaraná Antarctica Lata",
-    desc: "O queridinho brasileiro, docinho e cheio de bolhas de alegria.",
-    preco: 6,
-  },
-  {
-    id: 4,
-    imagem: "imagens/guarana-zero.png",
-    selo: "Zero açúcar",
-    nome: "Guaraná Antarctica Zero Lata",
-    desc: "Aquele guaraná de sempre, só que na versão levinha pro seu dia a dia.",
-    preco: 6,
-  },
-  {
-    id: 5,
-    imagem: "imagens/agua.png",
-    selo: "Hidrata",
-    nome: "Água Mineral",
-    desc: "Pra hidratar com estilo.",
-    preco: 4,
-  },
-  {
-    id: 6,
-    imagem: "imagens/suco-uva.png",
-    selo: "Refrescante",
-    nome: "Suco de Uva Del Valle Lata",
-    desc: "Uva roxa bem suculenta numa latinha gelada, direto pra sua mão.",
-    preco: 6,
-  },
+  { id: 1, imagem: "imagens/coca-cola.png", selo: "Clássica", nome: "Coca-Cola Lata", desc: "A clássica, gelada e borbulhante que combina com qualquer roda de conversa na feira.", preco: 6 },
+  { id: 2, imagem: "imagens/coca-cola-zero.png", selo: "Zero açúcar", nome: "Coca-Cola Zero Lata", desc: "Todo o sabor de sempre, sem açúcar — pra curtir a feira inteira sem peso na consciência.", preco: 6 },
+  { id: 3, imagem: "imagens/guarana.png", selo: "Favorita", nome: "Guaraná Antarctica Lata", desc: "O queridinho brasileiro, docinho e cheio de bolhas de alegria.", preco: 6 },
+  { id: 4, imagem: "imagens/guarana-zero.png", selo: "Zero açúcar", nome: "Guaraná Antarctica Zero Lata", desc: "Aquele guaraná de sempre, só que na versão levinha pro seu dia de feira.", preco: 6 },
+  { id: 5, imagem: "imagens/agua.png", selo: "Hidrata", nome: "Água Mineral", desc: "Pra hidratar com estilo entre uma dança e outra da feira.", preco: 4 },
+  { id: 6, imagem: "imagens/suco-uva.png", selo: "Refrescante", nome: "Suco de Uva Del Valle Lata", desc: "Uva roxa bem suculenta numa latinha gelada, direto pra sua mão.", preco: 6 },
 ];
 
-// Mensagens fofas/engraçadas sorteadas na hora de retirar
-const mensagensRetirada = (nome, senha) => [
-  `Ei, ${nome}! 🎉 Sua bebida já tá te esperando na banca, mais gelada que coração de segunda-feira. Chega lá e fala a senha ${senha} pro pessoal!`,
-  `${nome}, sua bebida chegou antes de você — que fofoqueira! 😄 Corre até a banca com a senha ${senha} antes que o gelo derreta de tanto tédio.`,
-  `Oi, ${nome}! Pedido prontinho e suado de tanto ficar te esperando 🥤💦. Passa na banca e mostra a senha ${senha}, a gente já separou um sorriso junto.`,
-  `${nome}, sua bebida tá fazendo hora extra aqui na banca só esperando você. Senha ${senha}, vem buscar com carinho (e sede)! 💛`,
-  `Prontooo, ${nome}! 🙌 Bebida geladinha, senha ${senha}. Vem antes que a gente tome no seu lugar (brincadeira... ou não 👀).`,
+const mensagensRetirada = () => [
+  "Sua bebida já tá te esperando na banca! 🎉 Uma figura de peruca vermelha e um pouquinho de tinta azul no rosto vai te entregar — não se assusta, é só a fantasia da festa, prometo que não é nenhum palhaço assombrado! 😄",
+  "Pedido prontinho! Vá até a banca e procure a pessoa de peruca vermelha toda pintadinha de azul — ela é gente boa, só um pouco artística demais hoje 🎭💙",
+  "Sua bebida geladinha já tá na banca! Ah, e se você ver alguém de peruca vermelha com tinta azul na cara vindo até você sorrindo, relaxa — ela só quer te entregar sua bebida, não é nenhum fantasma da feira 👻🥤",
+  "Corre até a banca! Tem uma figura de peruca vermelha e rosto pintado de azul te esperando com sua bebida — parece assustador, mas é só carinho (e um figurino e tanto) 💛",
+  "Prontinho! Vai lá na banca buscar sua bebida. Só um aviso amigável: quem vai te atender tá de peruca vermelha e um pouco de tinta azul na cara — não é palhaço de terror, é só a alegria da feira em pessoa! 😂",
 ];
 
 // ======================================================
 // ESTADO
 // ======================================================
-let carrinho = {}; // { id: quantidade }
-let pagamentoEscolhido = null; // "dinheiro" | "pix" | "cartao"
-let cartaoEscolhido = null; // "credito" | "debito"
-let pedidoJaFinalizado = false; // trava o botão depois de gerar a senha
+let carrinho = {};
+let pagamentoEscolhido = null;
+let cartaoEscolhido = null;
+let pedidoJaFinalizado = false;
+let pedidosFinalizados = [];
 
-const formatoMoeda = (valor) =>
-  valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const formatoMoeda = (valor) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 // ======================================================
-// TOAST — "item adicionado"
+// TOAST
 // ======================================================
 let toastTimeout = null;
 
 function mostrarToast(texto) {
   const toast = document.getElementById("toast");
   toast.textContent = texto;
-
   toast.classList.remove("mostrando");
   void toast.offsetWidth;
   toast.classList.add("mostrando");
-
   clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => {
-    toast.classList.remove("mostrando");
-  }, 1600);
+  toastTimeout = setTimeout(() => toast.classList.remove("mostrando"), 1600);
 }
 
 // ======================================================
-// RENDER — CARDÁPIO (com selinho e seletor de quantidade)
+// CARROSSEL
+// ======================================================
+function iniciarCarrossel() {
+  const imagens = Array.from(document.querySelectorAll(".carrossel-imagem"));
+  const containerPontos = document.getElementById("carrossel-pontos");
+  if (imagens.length === 0) return;
+
+  let indiceAtual = 0;
+
+  containerPontos.innerHTML = imagens
+    .map((_, indice) => `<button class="ponto${indice === 0 ? " ativo" : ""}" data-indice="${indice}" aria-label="Ir para imagem ${indice + 1}"></button>`)
+    .join("");
+
+  const pontos = Array.from(containerPontos.querySelectorAll(".ponto"));
+
+  function mostrarImagem(indice) {
+    imagens.forEach((img, i) => img.classList.toggle("ativa", i === indice));
+    pontos.forEach((ponto, i) => ponto.classList.toggle("ativo", i === indice));
+    indiceAtual = indice;
+  }
+
+  let autoplay = setInterval(avancar, INTERVALO_CARROSSEL);
+
+  function reiniciarAutoplay() {
+    clearInterval(autoplay);
+    autoplay = setInterval(avancar, INTERVALO_CARROSSEL);
+  }
+
+  function avancar() { mostrarImagem((indiceAtual + 1) % imagens.length); }
+  function voltar() { mostrarImagem((indiceAtual - 1 + imagens.length) % imagens.length); }
+
+  pontos.forEach((ponto) => {
+    ponto.addEventListener("click", () => {
+      mostrarImagem(Number(ponto.dataset.indice));
+      reiniciarAutoplay();
+    });
+  });
+
+  document.getElementById("seta-proxima").addEventListener("click", () => { avancar(); reiniciarAutoplay(); });
+  document.getElementById("seta-anterior").addEventListener("click", () => { voltar(); reiniciarAutoplay(); });
+}
+
+// ======================================================
+// RENDER — CARDÁPIO
 // ======================================================
 function renderCardapio() {
   const grade = document.getElementById("grade-cardapio");
   grade.innerHTML = cardapio
-    .map(
-      (item) => `
+    .map((item) => `
     <div class="item-cardapio">
       <div class="item-imagem">
         <span class="item-selo">${item.selo}</span>
@@ -119,11 +132,9 @@ function renderCardapio() {
           <button class="btn-adicionar" data-id="${item.id}">Adicionar</button>
         </div>
       </div>
-    </div>`
-    )
+    </div>`)
     .join("");
 
-  // seletor de quantidade (1 a 20) antes de adicionar
   grade.querySelectorAll("[data-qtd-acao]").forEach((botao) => {
     botao.addEventListener("click", () => {
       const id = botao.dataset.id;
@@ -134,7 +145,6 @@ function renderCardapio() {
     });
   });
 
-  // botão "Adicionar"
   grade.querySelectorAll(".btn-adicionar").forEach((botao) => {
     let timeoutConfirmado = null;
 
@@ -145,7 +155,6 @@ function renderCardapio() {
       const qtdEscolhida = Number(span.textContent);
 
       carrinho[id] = (carrinho[id] || 0) + qtdEscolhida;
-
       mostrarToast(`${qtdEscolhida}× ${item.nome} adicionado ao carrinho!`);
 
       const textoOriginal = botao.textContent;
@@ -157,8 +166,7 @@ function renderCardapio() {
         botao.textContent = textoOriginal;
       }, 900);
 
-      span.textContent = 1; // volta o seletor pra 1 depois de adicionar
-
+      span.textContent = 1;
       atualizarTudo();
     });
   });
@@ -185,12 +193,9 @@ function renderCarrinho() {
     lista.innerHTML = `<div class="vazio">Seu carrinho tá mais vazio que feira sem música 🎶<br>Volta no cardápio e escolhe algo gostoso!</div>`;
   } else {
     lista.innerHTML = itens
-      .map(
-        (item) => `
+      .map((item) => `
       <div class="linha-carrinho">
-        <div class="imagem-mini">
-          <img src="${item.imagem}" alt="${item.nome}">
-        </div>
+        <div class="imagem-mini"><img src="${item.imagem}" alt="${item.nome}"></div>
         <div class="linha-info">
           <div class="linha-nome">${item.nome}</div>
           <div class="linha-preco">${formatoMoeda(item.preco)}</div>
@@ -200,8 +205,7 @@ function renderCarrinho() {
           <span>${item.qtd}</span>
           <button data-id="${item.id}" data-acao="mais">+</button>
         </div>
-      </div>`
-      )
+      </div>`)
       .join("");
 
     lista.querySelectorAll("button[data-acao]").forEach((botao) => {
@@ -218,7 +222,7 @@ function renderCarrinho() {
 }
 
 // ======================================================
-// RENDER — RESUMO NA TELA DE FINALIZAR
+// RENDER — RESUMO FINALIZAR
 // ======================================================
 function renderResumoFinal() {
   const container = document.getElementById("resumo-final");
@@ -230,29 +234,37 @@ function renderResumoFinal() {
   }
 
   const linhas = itens
-    .map(
-      (item) => `
+    .map((item) => `
       <div class="linha-resumo">
         <span>${item.qtd}× ${item.nome}</span>
         <span>${formatoMoeda(item.preco * item.qtd)}</span>
-      </div>`
-    )
+      </div>`)
     .join("");
 
-  container.innerHTML = `
-    ${linhas}
-    <div class="linha-resumo total">
-      <span>Total</span>
-      <span>${formatoMoeda(calcularTotal())}</span>
-    </div>`;
+  container.innerHTML = `${linhas}<div class="linha-resumo total"><span>Total</span><span>${formatoMoeda(calcularTotal())}</span></div>`;
 }
 
 // ======================================================
-// CONTADOR DO BOTÃO CARRINHO
+// CONTADOR + BARRA FLUTUANTE
 // ======================================================
 function atualizarContador() {
   const total = Object.values(carrinho).reduce((a, b) => a + b, 0);
   document.getElementById("contador-carrinho").textContent = total;
+}
+
+function atualizarBarraFlutuante() {
+  const barra = document.getElementById("barra-flutuante");
+  const painelCardapioAtivo = document.getElementById("painel-cardapio").classList.contains("ativo");
+  const itens = itensDoCarrinho();
+  const totalItens = itens.reduce((a, i) => a + i.qtd, 0);
+
+  if (itens.length > 0 && painelCardapioAtivo) {
+    barra.classList.remove("escondido");
+    document.getElementById("barra-flutuante-info").textContent =
+      `${totalItens} ${totalItens === 1 ? "item" : "itens"} • ${formatoMoeda(calcularTotal())}`;
+  } else {
+    barra.classList.add("escondido");
+  }
 }
 
 function atualizarTudo() {
@@ -260,10 +272,11 @@ function atualizarTudo() {
   renderResumoFinal();
   atualizarContador();
   atualizarBotaoFinalizar();
+  atualizarBarraFlutuante();
 }
 
 // ======================================================
-// ABAS (só Cardápio e Carrinho — Finalizar é acessado pelo botão)
+// ABAS
 // ======================================================
 function mudarAba(nomeAba) {
   document.querySelectorAll(".aba").forEach((btn) => {
@@ -274,39 +287,33 @@ function mudarAba(nomeAba) {
   document.querySelectorAll(".painel").forEach((painel) => {
     painel.classList.toggle("ativo", painel.id === `painel-${nomeAba}`);
   });
+  atualizarBarraFlutuante();
 }
 
-document.querySelectorAll(".aba").forEach((btn) => {
-  btn.addEventListener("click", () => mudarAba(btn.dataset.aba));
-});
-
+document.querySelectorAll(".aba").forEach((btn) => btn.addEventListener("click", () => mudarAba(btn.dataset.aba)));
 document.getElementById("botao-carrinho").addEventListener("click", () => mudarAba("carrinho"));
+document.getElementById("botao-ver-carrinho").addEventListener("click", () => mudarAba("carrinho"));
 
 document.getElementById("ir-para-finalizar").addEventListener("click", () => {
   document.querySelectorAll(".aba").forEach((btn) => btn.classList.remove("ativa"));
   document.querySelectorAll(".painel").forEach((painel) => painel.classList.remove("ativo"));
   document.getElementById("painel-finalizar").classList.add("ativo");
+  atualizarBarraFlutuante();
 });
 
 // ======================================================
-// FORMA DE PAGAMENTO (sempre visível na tela de finalizar)
+// FORMA DE PAGAMENTO
 // ======================================================
-const campoNome = document.getElementById("campo-nome");
 const blocoCartao = document.getElementById("bloco-cartao");
-
-campoNome.addEventListener("input", atualizarBotaoFinalizar);
 
 document.querySelectorAll(".opcao-pagamento[data-pagamento]").forEach((botao) => {
   botao.addEventListener("click", () => {
     pagamentoEscolhido = botao.dataset.pagamento;
     cartaoEscolhido = null;
-
     document.querySelectorAll(".opcao-pagamento[data-pagamento]").forEach((b) => b.classList.remove("selecionada"));
     botao.classList.add("selecionada");
-
     document.querySelectorAll(".opcao-pagamento[data-cartao]").forEach((b) => b.classList.remove("selecionada"));
     blocoCartao.classList.toggle("escondido", pagamentoEscolhido !== "cartao");
-
     atualizarBotaoFinalizar();
   });
 });
@@ -329,45 +336,98 @@ function limparSelecaoPagamento() {
 }
 
 // ======================================================
-// HABILITA/DESABILITA BOTÃO "FINALIZAR PEDIDO"
+// BOTÃO FINALIZAR
 // ======================================================
 function atualizarBotaoFinalizar() {
   const btn = document.getElementById("btn-finalizar");
+  if (pedidoJaFinalizado) { btn.disabled = true; return; }
 
-  if (pedidoJaFinalizado) {
-    btn.disabled = true;
-    return;
-  }
-
-  const temNome = campoNome.value.trim().length > 0;
   const temItens = itensDoCarrinho().length > 0;
   const pagamentoCompleto =
     pagamentoEscolhido === "dinheiro" ||
     pagamentoEscolhido === "pix" ||
     (pagamentoEscolhido === "cartao" && cartaoEscolhido !== null);
 
-  btn.disabled = !(temNome && temItens && pagamentoCompleto);
+  btn.disabled = !(temItens && pagamentoCompleto);
 }
 
 // ======================================================
-// FINALIZAR PEDIDO (só gera senha uma vez por pedido)
+// QR CODE PIX
+// ======================================================
+function calcularCRC16(payload) {
+  let crc = 0xffff;
+  for (let i = 0; i < payload.length; i++) {
+    crc ^= payload.charCodeAt(i) << 8;
+    for (let j = 0; j < 8; j++) {
+      crc = (crc & 0x8000) !== 0 ? (crc << 1) ^ 0x1021 : crc << 1;
+      crc &= 0xffff;
+    }
+  }
+  return crc.toString(16).toUpperCase().padStart(4, "0");
+}
+
+function campoPix(id, valor) {
+  const tamanho = String(valor.length).padStart(2, "0");
+  return `${id}${tamanho}${valor}`;
+}
+
+function gerarPayloadPix(valor) {
+  const valorFormatado = valor.toFixed(2);
+  const nome = NOME_RECEBEDOR.substring(0, 25);
+  const cidade = CIDADE_RECEBEDOR.substring(0, 15);
+
+  const gui = campoPix("00", "br.gov.bcb.pix");
+  const chave = campoPix("01", CHAVE_PIX);
+  const contaMerchant = campoPix("26", gui + chave);
+
+  const payloadSemCrc =
+    campoPix("00", "01") +
+    contaMerchant +
+    campoPix("52", "0000") +
+    campoPix("53", "986") +
+    campoPix("54", valorFormatado) +
+    campoPix("58", "BR") +
+    campoPix("59", nome) +
+    campoPix("60", cidade) +
+    campoPix("62", campoPix("05", "***")) +
+    "6304";
+
+  return payloadSemCrc + calcularCRC16(payloadSemCrc);
+}
+
+// ======================================================
+// FINALIZAR PEDIDO
 // ======================================================
 document.getElementById("form-pedido").addEventListener("submit", (evento) => {
   evento.preventDefault();
-
   if (pedidoJaFinalizado) return;
+
+  const itens = itensDoCarrinho();
+  const total = calcularTotal();
 
   pedidoJaFinalizado = true;
   atualizarBotaoFinalizar();
 
-  const nome = campoNome.value.trim() || "amigo(a)";
-  const senha = String(Math.floor(Math.random() * 900) + 100);
+  pedidosFinalizados.push({
+    itens: itens.map((i) => ({ nome: i.nome, qtd: i.qtd, preco: i.preco })),
+    total,
+    pagamento: pagamentoEscolhido,
+    cartao: cartaoEscolhido,
+    dataHora: new Date(),
+  });
 
-  const mensagens = mensagensRetirada(nome, senha);
-  const mensagemEscolhida = mensagens[Math.floor(Math.random() * mensagens.length)];
+  const mensagens = mensagensRetirada();
+  document.getElementById("mensagem-fofa").textContent = mensagens[Math.floor(Math.random() * mensagens.length)];
 
-  document.getElementById("numero-senha").textContent = senha;
-  document.getElementById("mensagem-fofa").textContent = mensagemEscolhida;
+  const blocoPix = document.getElementById("bloco-pix");
+  if (pagamentoEscolhido === "pix") {
+    const payload = gerarPayloadPix(total);
+    document.getElementById("qr-pix").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(payload)}`;
+    document.getElementById("valor-pix-texto").textContent = formatoMoeda(total);
+    blocoPix.classList.remove("escondido");
+  } else {
+    blocoPix.classList.add("escondido");
+  }
 
   document.getElementById("form-pedido").classList.add("escondido");
   document.getElementById("confirmacao").classList.remove("escondido");
@@ -377,8 +437,12 @@ document.getElementById("novo-pedido").addEventListener("click", () => {
   carrinho = {};
   pedidoJaFinalizado = false;
 
-  campoNome.value = "";
   limparSelecaoPagamento();
+
+  // limpa os seletores de quantidade de todos os produtos do cardápio
+  document.querySelectorAll('[id^="qtd-"]').forEach((span) => {
+    span.textContent = "1";
+  });
 
   atualizarTudo();
 
@@ -387,10 +451,100 @@ document.getElementById("novo-pedido").addEventListener("click", () => {
   mudarAba("cardapio");
 });
 
+// ======================================================
+// ÁREA RESTRITA
+// ======================================================
+const modalSenha = document.getElementById("modal-senha");
+const painelAdmin = document.getElementById("painel-admin");
+const campoSenhaAdmin = document.getElementById("campo-senha-admin");
+const modalErro = document.getElementById("modal-erro");
 
+document.getElementById("botao-admin").addEventListener("click", () => {
+  campoSenhaAdmin.value = "";
+  modalErro.classList.add("escondido");
+  modalSenha.classList.remove("escondido");
+  campoSenhaAdmin.focus();
+});
+
+document.getElementById("cancelar-admin").addEventListener("click", () => {
+  modalSenha.classList.add("escondido");
+});
+
+function tentarEntrarAdmin() {
+  if (campoSenhaAdmin.value === SENHA_ADMIN) {
+    modalSenha.classList.add("escondido");
+    renderPedidosAdmin();
+    painelAdmin.classList.remove("escondido");
+  } else {
+    modalErro.classList.remove("escondido");
+  }
+}
+
+document.getElementById("confirmar-admin").addEventListener("click", tentarEntrarAdmin);
+campoSenhaAdmin.addEventListener("keydown", (evento) => { if (evento.key === "Enter") tentarEntrarAdmin(); });
+
+function rotuloPagamentoPedido(pedido) {
+  if (pedido.pagamento === "dinheiro") return "💵 Dinheiro";
+  if (pedido.pagamento === "pix") return "📱 Pix";
+  if (pedido.pagamento === "cartao") return `💳 Cartão (${pedido.cartao === "credito" ? "Crédito" : "Débito"})`;
+  return pedido.pagamento;
+}
+
+function renderPedidosAdmin() {
+  const container = document.getElementById("lista-pedidos-admin");
+
+  if (pedidosFinalizados.length === 0) {
+    container.innerHTML = `<div class="pedido-admin-vazio">Nenhum pedido finalizado ainda.</div>`;
+    return;
+  }
+
+  container.innerHTML = pedidosFinalizados
+    .map((pedido, indice) => {
+      const hora = pedido.dataHora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+      const itensTexto = pedido.itens.map((i) => `${i.qtd}× ${i.nome}`).join(", ");
+      return `
+      <div class="pedido-admin-item">
+        <div class="pedido-admin-topo">
+          <span>Pedido #${indice + 1} — ${hora}</span>
+          <span>${formatoMoeda(pedido.total)}</span>
+        </div>
+        <div class="pedido-admin-itens">${itensTexto}</div>
+        <div class="pedido-admin-itens">${rotuloPagamentoPedido(pedido)}</div>
+      </div>`;
+    })
+    .reverse()
+    .join("");
+}
+
+document.getElementById("fechar-admin").addEventListener("click", () => {
+  painelAdmin.classList.add("escondido");
+  mudarAba("cardapio");
+});
 
 // ======================================================
-// EFEITO DE BALANÇO DOS ÍCONES AO ROLAR A PÁGINA
+// CONTAGEM REGRESSIVA
+// ======================================================
+function atualizarContagem() {
+  const elemento = document.getElementById("contagem-numeros");
+  const agora = new Date();
+  const diferenca = FIM_DA_FEIRA - agora;
+
+  if (diferenca <= 0) { elemento.textContent = "Encerrado"; return; }
+
+  const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+  const horas = Math.floor((diferenca / (1000 * 60 * 60)) % 24);
+  const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
+  const segundos = Math.floor((diferenca / 1000) % 60);
+  const dois = (n) => String(n).padStart(2, "0");
+
+  elemento.textContent = dias > 0 ? `${dias}d ${dois(horas)}h ${dois(minutos)}m` : `${dois(horas)}:${dois(minutos)}:${dois(segundos)}`;
+}
+
+setInterval(atualizarContagem, 1000);
+atualizarContagem();
+
+// ======================================================
+// EFEITO DE BALANÇO AO ROLAR
 // ======================================================
 let ultimoScrollY = window.scrollY;
 let anguloAlvo = 0;
@@ -416,3 +570,4 @@ animarIcones();
 // ======================================================
 renderCardapio();
 atualizarTudo();
+iniciarCarrossel();
