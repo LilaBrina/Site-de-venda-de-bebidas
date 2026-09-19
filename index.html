@@ -3,16 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Banca de Bebidas — Feira Cultural</title>
+<title>Banca de Bebidas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- CAMADAS DE FUNDO QUE TROCAM DE COR JUNTO COM O CARROSSEL -->
+<div class="camada-fundo" id="fundo-a"></div>
+<div class="camada-fundo" id="fundo-b"></div>
+
 <!-- BARRA DE AVISO -->
 <div class="barra-aviso">
-  🎉 Peça agora e retire fresquinha na nossa banca da Feira Cultural!
+  🎉 Peça agora e retire a sua bebida na nossa banca!
 </div>
 
 <!-- BOTÃO DA ÁREA RESTRITA (canto da tela) -->
@@ -23,8 +27,8 @@
   <div class="marca">
     <span class="marca-icone">🥤</span>
     <div>
-      <h1>Banca da Feira</h1>
-      <p>bebidas geladas pra curtir a cultura</p>
+      <h1>Banca da Bebidas</h1>
+      <p>bebidas geladas pra curtir sem sede!!</p>
     </div>
   </div>
   <button class="btn-carrinho" id="botao-carrinho" aria-label="Abrir carrinho">
@@ -62,7 +66,7 @@
         <p>Escolha, adicione ao carrinho e já vai preparando a sede</p>
       </div>
       <div class="contagem" id="contagem">
-        <span class="contagem-rotulo">Fim da feira em</span>
+        <span class="contagem-rotulo">Encerra em</span>
         <div class="contagem-numeros" id="contagem-numeros">--:--:--</div>
       </div>
     </div>
@@ -119,7 +123,7 @@
 
 </main>
 
-<!-- BARRA FLUTUANTE DO CARRINHO — some por padrão, some via classe "escondido" -->
+<!-- BARRA FLUTUANTE DO CARRINHO -->
 <div class="barra-flutuante escondido" id="barra-flutuante">
   <span id="barra-flutuante-info">0 itens • R$ 0,00</span>
   <button class="btn-primario" id="botao-ver-carrinho">Ver carrinho</button>

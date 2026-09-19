@@ -2,22 +2,28 @@
 // CONFIGURAÇÕES RÁPIDAS
 // ======================================================
 
-// Edite esta data/hora para quando a feira realmente termina:
 const FIM_DA_FEIRA = new Date("2026-09-20T22:00:00");
-
-// Troca de imagem do carrossel a cada X milissegundos:
 const INTERVALO_CARROSSEL = 3000;
-
-// Senha da área restrita (pedidos finalizados):
 const SENHA_ADMIN = "Preve2026";
 
-// ======================================================
-// DADOS DA SUA CHAVE PIX — PREENCHA AQUI COM OS SEUS DADOS
-// ======================================================
 const CHAVE_PIX = "SUA_CHAVE_PIX_AQUI";
 const NOME_RECEBEDOR = "SEU NOME AQUI";
 const CIDADE_RECEBEDOR = "SUA CIDADE";
 
+// Cor de fundo pra cada banner (na mesma ordem: banner1, banner2, banner3, banner4).
+// O banner1 (Guaraná) já ficou perfeito, então mantive o padrão verde/azul.
+// Se a ordem dos seus banners for diferente (ex: se o banner2 não for a Coca),
+// é só trocar a posição delas aqui nesse array.
+const CORES_FUNDO_BANNERS = [
+  // banner1 — Guaraná (verde)
+  "radial-gradient(circle at 0% 0%, rgba(19, 219, 69, 0.72) 0%, transparent 55%), radial-gradient(circle at 100% 0%, rgba(32, 206, 40, 0.6) 0%, transparent 55%), radial-gradient(circle at 0% 100%, rgba(60,170,220,0.4) 0%, transparent 58%), radial-gradient(circle at 100% 100%, rgba(31,174,102,0.4) 0%, transparent 58%)",
+  // banner2 — Coca-Cola (vermelho)
+  "radial-gradient(circle at 0% 0%, rgb(16, 96, 170) 0%, transparent 55%), radial-gradient(circle at 100% 0%, rgba(26, 28, 194, 0.42) 0%, transparent 55%), radial-gradient(circle at 0% 100%, rgba(255,130,100,0.4) 0%, transparent 58%), radial-gradient(circle at 100% 100%, rgba(214,40,40,0.4) 0%, transparent 58%)",
+  // banner3 — Suco de uva (roxo)
+  "radial-gradient(circle at 0% 0%, rgba(192, 49, 44, 0.67) 0%, transparent 55%), radial-gradient(circle at 100% 0%, rgba(194, 60, 51, 0.4) 0%, transparent 55%), radial-gradient(circle at 0% 100%, rgba(185,100,210,0.4) 0%, transparent 58%), radial-gradient(circle at 100% 100%, rgba(122,45,155,0.38) 0%, transparent 58%)",
+  // banner4 — Água (azul)
+  "radial-gradient(circle at 0% 0%, rgba(10, 117, 184, 0.64) 0%, transparent 55%), radial-gradient(circle at 100% 0%, rgba(23, 126, 167, 0.42) 0%, transparent 55%), radial-gradient(circle at 0% 100%, rgba(100,195,235,0.4) 0%, transparent 58%), radial-gradient(circle at 100% 100%, rgba(28,135,200,0.38) 0%, transparent 58%)",
+];
 // ======================================================
 // CARDÁPIO — as imagens vêm da pasta "imagens"
 // ======================================================
@@ -31,11 +37,14 @@ const cardapio = [
 ];
 
 const mensagensRetirada = () => [
-  "Sua bebida já tá te esperando na banca! 🎉 Uma figura de peruca vermelha e um pouquinho de tinta azul no rosto vai te entregar — não se assusta, é só a fantasia da festa, prometo que não é nenhum palhaço assombrado! 😄",
-  "Pedido prontinho! Vá até a banca e procure a pessoa de peruca vermelha toda pintadinha de azul — ela é gente boa, só um pouco artística demais hoje 🎭💙",
-  "Sua bebida geladinha já tá na banca! Ah, e se você ver alguém de peruca vermelha com tinta azul na cara vindo até você sorrindo, relaxa — ela só quer te entregar sua bebida, não é nenhum fantasma da feira 👻🥤",
-  "Corre até a banca! Tem uma figura de peruca vermelha e rosto pintado de azul te esperando com sua bebida — parece assustador, mas é só carinho (e um figurino e tanto) 💛",
-  "Prontinho! Vai lá na banca buscar sua bebida. Só um aviso amigável: quem vai te atender tá de peruca vermelha e um pouco de tinta azul na cara — não é palhaço de terror, é só a alegria da feira em pessoa! 😂",
+  "Sua bebida já tá te esperando na banca, geladinha e com nome sujo se você demorar! 😄",
+  "Pedido certinho! Vai lá buscar antes que a sede vença a preguiça 🥤",
+  "Prontinho! Sua bebida tá contando os segundos pra sair do gelo e chegar na sua mão 🧊",
+  "Feito! Passa na banca, a gente já deixou sua bebida separadinha com carinho 💛",
+  "Boa escolha! Agora é só ir até a banca — a entrega promete ser mais rápida que a fila do banheiro 😂",
+  "Pedido recebido! Vai lá buscar sua bebida antes que ela fique com inveja do gelo e comece a esquentar 🥵",
+  "Prontinho! Sua bebida já tá na banca fazendo hora extra só esperando por você 💦",
+  "Sua bebida geladinha já tá na banca! Ah, e se aparecer alguém de peruca vermelha com um pouco de tinta azul na cara pra te entregar, relaxa — é só a animação da equipe em pessoa 😄",
 ];
 
 // ======================================================
@@ -65,6 +74,34 @@ function mostrarToast(texto) {
 }
 
 // ======================================================
+// FUNDO QUE TROCA DE COR (efeito LED, crossfade entre 2 camadas)
+// ======================================================
+let camadaFundoAtiva = null;
+let camadaFundoInativa = null;
+
+function iniciarFundoDinamico() {
+  camadaFundoAtiva = document.getElementById("fundo-a");
+  camadaFundoInativa = document.getElementById("fundo-b");
+
+  // aplica a primeira cor sem fade, pra já começar certo
+  camadaFundoAtiva.style.background = CORES_FUNDO_BANNERS[0];
+  camadaFundoAtiva.classList.add("visivel");
+}
+
+function mudarCorFundo(indice) {
+  if (!camadaFundoAtiva || !camadaFundoInativa) return;
+  const gradiente = CORES_FUNDO_BANNERS[indice] || CORES_FUNDO_BANNERS[0];
+
+  camadaFundoInativa.style.background = gradiente;
+  camadaFundoInativa.classList.add("visivel");
+  camadaFundoAtiva.classList.remove("visivel");
+
+  const temp = camadaFundoAtiva;
+  camadaFundoAtiva = camadaFundoInativa;
+  camadaFundoInativa = temp;
+}
+
+// ======================================================
 // CARROSSEL
 // ======================================================
 function iniciarCarrossel() {
@@ -84,6 +121,7 @@ function iniciarCarrossel() {
     imagens.forEach((img, i) => img.classList.toggle("ativa", i === indice));
     pontos.forEach((ponto, i) => ponto.classList.toggle("ativo", i === indice));
     indiceAtual = indice;
+    mudarCorFundo(indice);
   }
 
   let autoplay = setInterval(avancar, INTERVALO_CARROSSEL);
@@ -439,7 +477,6 @@ document.getElementById("novo-pedido").addEventListener("click", () => {
 
   limparSelecaoPagamento();
 
-  // limpa os seletores de quantidade de todos os produtos do cardápio
   document.querySelectorAll('[id^="qtd-"]').forEach((span) => {
     span.textContent = "1";
   });
@@ -570,4 +607,5 @@ animarIcones();
 // ======================================================
 renderCardapio();
 atualizarTudo();
+iniciarFundoDinamico();
 iniciarCarrossel();
