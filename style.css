@@ -500,6 +500,16 @@ main { max-width: 1040px; margin: 0 auto; padding: 24px; }
 
 .opcoes-cartao { display: flex; gap: 8px; margin-top: 2px; }
 
+.aviso-taxa-cartao {
+  margin: 0;
+  font-size: 13px;
+  color: var(--texto-suave);
+  background: var(--fundo-gelado);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
 .resumo-final {
   background: var(--fundo-gelado);
   border: 1px solid var(--borda);

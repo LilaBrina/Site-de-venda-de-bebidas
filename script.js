@@ -6,14 +6,11 @@ const FIM_DA_FEIRA = new Date("2026-09-20T22:00:00");
 const INTERVALO_CARROSSEL = 3000;
 const SENHA_ADMIN = "Preve2026";
 
-const CHAVE_PIX = "SUA_CHAVE_PIX_AQUI";
-const NOME_RECEBEDOR = "SEU NOME AQUI";
-const CIDADE_RECEBEDOR = "SUA CIDADE";
+const CHAVE_PIX = "59546370835";
+const NOME_RECEBEDOR = "Sabrina Domingues";
+const CIDADE_RECEBEDOR = "Agudos, SP";
 
-// Cor de fundo pra cada banner (na mesma ordem: banner1, banner2, banner3, banner4).
-// O banner1 (Guaraná) já ficou perfeito, então mantive o padrão verde/azul.
-// Se a ordem dos seus banners for diferente (ex: se o banner2 não for a Coca),
-// é só trocar a posição delas aqui nesse array.
+// Cor de fundo pra cada banner 
 const CORES_FUNDO_BANNERS = [
   // banner1 — Guaraná (verde)
   "radial-gradient(circle at 0% 0%, rgba(19, 219, 69, 0.72) 0%, transparent 55%), radial-gradient(circle at 100% 0%, rgba(32, 206, 40, 0.6) 0%, transparent 55%), radial-gradient(circle at 0% 100%, rgba(60,170,220,0.4) 0%, transparent 58%), radial-gradient(circle at 100% 100%, rgba(31,174,102,0.4) 0%, transparent 58%)",
@@ -32,8 +29,8 @@ const cardapio = [
   { id: 2, imagem: "imagens/coca-cola-zero.png", selo: "Zero açúcar", nome: "Coca-Cola Zero Lata", desc: "Todo o sabor de sempre, sem açúcar — pra curtir a feira inteira sem peso na consciência.", preco: 6 },
   { id: 3, imagem: "imagens/guarana.png", selo: "Favorita", nome: "Guaraná Antarctica Lata", desc: "O queridinho brasileiro, docinho e cheio de bolhas de alegria.", preco: 6 },
   { id: 4, imagem: "imagens/guarana-zero.png", selo: "Zero açúcar", nome: "Guaraná Antarctica Zero Lata", desc: "Aquele guaraná de sempre, só que na versão levinha pro seu dia de feira.", preco: 6 },
-  { id: 5, imagem: "imagens/agua.png", selo: "Hidrata", nome: "Água Mineral", desc: "Pra hidratar com estilo entre uma dança e outra da feira.", preco: 4 },
-  { id: 6, imagem: "imagens/suco-uva.png", selo: "Refrescante", nome: "Suco de Uva Del Valle Lata", desc: "Uva roxa bem suculenta numa latinha gelada, direto pra sua mão.", preco: 6 },
+  { id: 5, imagem: "imagens/agua.png", selo: "Hidrata", nome: "Água Mineral Castelo", desc: "Pra hidratar com estilo entre uma dança e outra da feira.", preco: 3 },
+  { id: 6, imagem: "imagens/suco-uva.png", selo: "Refrescante", nome: "Suco de Uva Del Valle Lata", desc: "Uva roxa bem suculenta numa latinha gelada, direto pra sua mão.", preco: 7 },
 ];
 
 const mensagensRetirada = () => [
@@ -44,7 +41,6 @@ const mensagensRetirada = () => [
   "Boa escolha! Agora é só ir até a banca — a entrega promete ser mais rápida que a fila do banheiro 😂",
   "Pedido recebido! Vai lá buscar sua bebida antes que ela fique com inveja do gelo e comece a esquentar 🥵",
   "Prontinho! Sua bebida já tá na banca fazendo hora extra só esperando por você 💦",
-  "Sua bebida geladinha já tá na banca! Ah, e se aparecer alguém de peruca vermelha com um pouco de tinta azul na cara pra te entregar, relaxa — é só a animação da equipe em pessoa 😄",
 ];
 
 // ======================================================
@@ -218,6 +214,11 @@ function itensDoCarrinho() {
     .filter(([, qtd]) => qtd > 0)
     .map(([id, qtd]) => ({ ...cardapio.find((i) => i.id === Number(id)), qtd }));
 }
+const TAXA_CARTAO = 1;
+
+function calcularTaxaCartao() {
+  return pagamentoEscolhido === "cartao" ? TAXA_CARTAO : 0;
+}
 
 function calcularTotal() {
   return itensDoCarrinho().reduce((soma, item) => soma + item.preco * item.qtd, 0);
@@ -279,7 +280,12 @@ function renderResumoFinal() {
       </div>`)
     .join("");
 
-  container.innerHTML = `${linhas}<div class="linha-resumo total"><span>Total</span><span>${formatoMoeda(calcularTotal())}</span></div>`;
+    const taxa = calcularTaxaCartao();
+  const linhaTaxa = taxa > 0
+    ? `<div class="linha-resumo"><span>Taxa do cartão</span><span>${formatoMoeda(taxa)}</span></div>`
+    : "";
+
+  container.innerHTML = `${linhas}${linhaTaxa}<div class="linha-resumo total"><span>Total</span><span>${formatoMoeda(calcularTotal() + taxa)}</span></div>`;
 }
 
 // ======================================================
@@ -352,6 +358,8 @@ document.querySelectorAll(".opcao-pagamento[data-pagamento]").forEach((botao) =>
     botao.classList.add("selecionada");
     document.querySelectorAll(".opcao-pagamento[data-cartao]").forEach((b) => b.classList.remove("selecionada"));
     blocoCartao.classList.toggle("escondido", pagamentoEscolhido !== "cartao");
+    document.getElementById("aviso-taxa-cartao").classList.toggle("escondido", pagamentoEscolhido !== "cartao");
+    renderResumoFinal();
     atualizarBotaoFinalizar();
   });
 });
@@ -371,6 +379,7 @@ function limparSelecaoPagamento() {
   document.querySelectorAll(".opcao-pagamento[data-pagamento]").forEach((b) => b.classList.remove("selecionada"));
   document.querySelectorAll(".opcao-pagamento[data-cartao]").forEach((b) => b.classList.remove("selecionada"));
   blocoCartao.classList.add("escondido");
+  document.getElementById("aviso-taxa-cartao").classList.add("escondido");
 }
 
 // ======================================================
@@ -441,13 +450,15 @@ document.getElementById("form-pedido").addEventListener("submit", (evento) => {
   if (pedidoJaFinalizado) return;
 
   const itens = itensDoCarrinho();
-  const total = calcularTotal();
+  const taxa = calcularTaxaCartao();
+  const total = calcularTotal() + taxa;
 
   pedidoJaFinalizado = true;
   atualizarBotaoFinalizar();
 
   pedidosFinalizados.push({
     itens: itens.map((i) => ({ nome: i.nome, qtd: i.qtd, preco: i.preco })),
+    taxaCartao: taxa,
     total,
     pagamento: pagamentoEscolhido,
     cartao: cartaoEscolhido,
@@ -455,7 +466,16 @@ document.getElementById("form-pedido").addEventListener("submit", (evento) => {
   });
 
   const mensagens = mensagensRetirada();
-  document.getElementById("mensagem-fofa").textContent = mensagens[Math.floor(Math.random() * mensagens.length)];
+  const mensagemSorteada = mensagens[Math.floor(Math.random() * mensagens.length)];
+
+  let avisoRetirada = "";
+  if (pagamentoEscolhido === "dinheiro") {
+    avisoRetirada = "Pague em dinheiro ali no balcão quando for buscar. ";
+  } else if (pagamentoEscolhido === "cartao") {
+    avisoRetirada = "Pague no cartão ali no balcão quando for buscar (já com a taxinha de R$ 1,00 incluída). ";
+  }
+
+  document.getElementById("mensagem-fofa").textContent = avisoRetirada + mensagemSorteada;
 
   const blocoPix = document.getElementById("bloco-pix");
   if (pagamentoEscolhido === "pix") {
